@@ -31,3 +31,4 @@ C:\C#\CsharpProjects\TaskTracker_WebAPI\TaskTrackerAPI\TaskTrackerAPI\obj\Debug\
 C:\C#\CsharpProjects\TaskTracker_WebAPI\TaskTrackerAPI\TaskTrackerAPI\obj\Debug\net10.0\TaskTrackerAPI.pdb
 C:\C#\CsharpProjects\TaskTracker_WebAPI\TaskTrackerAPI\TaskTrackerAPI\obj\Debug\net10.0\TaskTrackerAPI.genruntimeconfig.cache
 C:\C#\CsharpProjects\TaskTracker_WebAPI\TaskTrackerAPI\TaskTrackerAPI\obj\Debug\net10.0\ref\TaskTrackerAPI.dll
+C:\C#\CsharpProjects\TaskTracker_WebAPI\TaskTrackerAPI\TaskTrackerAPI\obj\Debug\net10.0\TaskTrackerAPI.sourcelink.json

@@ -8,18 +8,18 @@ namespace TaskTracker.Repositories
         private readonly JsonSerializerOptions _options =
             new() { WriteIndented = true };
 
-        public List<Task> Load()
+        public List<TaskItem> Load()
         {
             if (!File.Exists(_path))
-                return new List<Task>();
+                return new List<TaskItem>();
 
             var json = File.ReadAllText(_path);
             return string.IsNullOrWhiteSpace(json)
-                ? new List<Task>()
-                : JsonSerializer.Deserialize<List<Task>>(json) ?? new List<Task>();
+                ? new List<TaskItem>()
+                : JsonSerializer.Deserialize<List<TaskItem>>(json) ?? new List<TaskItem>();
         }
 
-        public void Save(List<Task> tasks)
+        public void Save(List<TaskItem> tasks)
         {
             var json = JsonSerializer.Serialize(tasks, _options);
             File.WriteAllText(_path, json);

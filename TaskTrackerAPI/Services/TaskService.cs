@@ -7,7 +7,7 @@ namespace TaskTracker
     public class TaskManager
     {
         private readonly TaskRepository _repo;
-        public List<Task> Tasks { get; }
+        public List<TaskItem> Tasks { get; }
         public int NextId { get; private set; }
         public TaskManager(TaskRepository repo)
         {
@@ -21,7 +21,7 @@ namespace TaskTracker
             {
                 throw new ArgumentException("Task name cannot be empty");
             }
-            Tasks.Add(new Task(NextId++, name, description));
+            Tasks.Add(new TaskItem(NextId++, name, description));
             _repo.Save(Tasks);
 
         }
@@ -58,7 +58,7 @@ namespace TaskTracker
         {
             Console.WriteLine("Tasks\nId\tName\tDescription\tStatus");
             Console.WriteLine("-------------------------------");
-            foreach(Task task in Tasks){
+            foreach(TaskItem task in Tasks){
                 if(!task.Deleted){
                     Console.WriteLine($"{task.Id}\t{task.Name}\t{task.Description}\t{task.Status}");
                 }
@@ -68,7 +68,7 @@ namespace TaskTracker
         {
             Console.WriteLine("Completed Tasks\nId\tName\tDescription\tStatus");
             Console.WriteLine("-------------------------------");
-            foreach (Task task in Tasks)
+            foreach (TaskItem task in Tasks)
             {
                 if(task.Finished && !task.Deleted)
                 {
@@ -80,7 +80,7 @@ namespace TaskTracker
         {
             Console.WriteLine("Unfinished Tasks\nId\tName\tDescription\tStatus");
             Console.WriteLine("-------------------------------");
-            foreach (Task task in Tasks)
+            foreach (TaskItem task in Tasks)
             {
                 if(!task.Finished && !task.Deleted)
                 {
@@ -92,7 +92,7 @@ namespace TaskTracker
         {
             Console.WriteLine("In Progress Tasks\nId\tName\tDescription\tStatus");
             Console.WriteLine("-------------------------------");
-            foreach (Task task in Tasks)
+            foreach (TaskItem task in Tasks)
             {
                 if(task.Status == "In Progress" && !task.Deleted)
                 {
