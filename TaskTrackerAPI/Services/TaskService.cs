@@ -2,104 +2,93 @@ using System.Text.Json;
 using System.IO;
 using System.Runtime.InteropServices;
 using TaskTracker.Repositories;
-namespace TaskTracker
+using TaskTracker;
+
+namespace TaskTrackerAPI.Services
 {
-    public class TaskManager
+    public class TaskService : ITaskService
     {
         private readonly TaskRepository _repo;
         public List<TaskItem> Tasks { get; }
         public int NextId { get; private set; }
-        public TaskManager(TaskRepository repo)
+        public TaskService(TaskRepository repo)
         {
             _repo = repo;
             Tasks = _repo.Load();
             NextId = Tasks.Count == 0 ? 1 : Tasks.Max(t => t.Id) + 1;
         }
-        public void Add(string name, string description)
+        public TaskItem? GetById(int id)
+        {
+            return Tasks.FirstOrDefault(t => t.Id == id);
+        }
+        public TaskItem Add(string name, string description)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Task name cannot be empty");
             }
-            Tasks.Add(new TaskItem(NextId++, name, description));
+            var task = new TaskItem(NextId++, name, description);
+            Tasks.Add(task);
             _repo.Save(Tasks);
-
+            return task;
         }
         public void Delete(int id)
         {
-           var task = Tasks.FirstOrDefault(t => t.Id == id);
-           if(task != null)
+            var task = Tasks.FirstOrDefault(t => t.Id == id);
+            if (task != null)
             {
                 Tasks.Remove(task);
                 _repo.Save(Tasks);
             }
         }
-        public void Update(int id, int fieldInteger, string userTaskChange)
+        public bool Update(int id, int fieldInteger, string userTaskChange)
         {
-            if(id >= 1){
+            bool returnBool = false;
+            if (id >= 1)
+            {
                 var task = Tasks.FirstOrDefault(t => t.Id == id);
-                if(userTaskChange != ""){
-                    if(fieldInteger == 1)
+                if (userTaskChange != "")
+                {
+                    if (fieldInteger == 1)
                     {
                         task.Name = userTaskChange;
+                        returnBool = true;
                     }
-                    if(fieldInteger == 2)
+                    if (fieldInteger == 2)
                     {
                         task.Status = userTaskChange;
+                        returnBool = true;
                     }
-                    if(fieldInteger == 3)
+                    if (fieldInteger == 3)
                     {
                         task.Description = userTaskChange;
+                        returnBool = true;
                     }
                 }
             }
+            return returnBool;
         }
-        public void List()
+        public IEnumerable<TaskItem> GetAll()
         {
-            Console.WriteLine("Tasks\nId\tName\tDescription\tStatus");
-            Console.WriteLine("-------------------------------");
-            foreach(TaskItem task in Tasks){
-                if(!task.Deleted){
-                    Console.WriteLine($"{task.Id}\t{task.Name}\t{task.Description}\t{task.Status}");
-                }
-            }
+            return Tasks.Where(t => !t.Deleted);
         }
-        public void ListFinishedTasks()
+        public TaskItem? GetTask(int id)
         {
-            Console.WriteLine("Completed Tasks\nId\tName\tDescription\tStatus");
-            Console.WriteLine("-------------------------------");
-            foreach (TaskItem task in Tasks)
-            {
-                if(task.Finished && !task.Deleted)
-                {
-                    Console.WriteLine($"{task.Id}\t{task.Name}\t{task.Description}\t{task.Status}");  
-                }
-            }
+            return Tasks.SingleOrDefault(t => t.Id == id);
         }
-        public void ListUnfinishedTasks()
+        public IEnumerable<TaskItem> GetInProgress()
         {
-            Console.WriteLine("Unfinished Tasks\nId\tName\tDescription\tStatus");
-            Console.WriteLine("-------------------------------");
-            foreach (TaskItem task in Tasks)
-            {
-                if(!task.Finished && !task.Deleted)
-                {
-                    Console.WriteLine($"{task.Id}\t{task.Name}\t{task.Description}\t{task.Status}");  
-                }
-            }
+            return Tasks.Where(t => t.Status == "In Progress");
         }
-        public void ListInProgressTasks()
+        public IEnumerable<TaskItem> GetDeleted()
         {
-            Console.WriteLine("In Progress Tasks\nId\tName\tDescription\tStatus");
-            Console.WriteLine("-------------------------------");
-            foreach (TaskItem task in Tasks)
-            {
-                if(task.Status == "In Progress" && !task.Deleted)
-                {
-                    Console.WriteLine($"{task.Id}\t{task.Name}\t{task.Description}\t{task.Status}");  
-                }
-            }
+            return Tasks.Where(t => t.Deleted == true);
         }
+        public IEnumerable<TaskItem> GetUnfinished()
+        {
+            return Tasks.Where(t => !t.Finished);
+        }
+
         public void SaveTasks()
         {
             _repo.Save(Tasks);

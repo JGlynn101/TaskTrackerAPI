@@ -2,7 +2,7 @@ using System.Text.Json;
 
 namespace TaskTracker.Repositories
 {
-    public class TaskRepository
+    public class TaskRepository : ITaskRepository
     {
         private readonly string _path = "./tasks.json";
         private readonly JsonSerializerOptions _options =
