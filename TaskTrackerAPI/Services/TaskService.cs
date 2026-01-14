@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using TaskTracker.Repositories;
 using TaskTracker;
+using TaskTrackerAPI.Contracts.Tasks;
 
 namespace TaskTrackerAPI.Services
 {
@@ -41,36 +42,21 @@ namespace TaskTrackerAPI.Services
                 _repo.Save(Tasks);
             }
         }
-        public bool Update(int id, int fieldInteger, string userTaskChange)
+        public bool Update(int id, UpdateTaskRequest request)
         {
-            bool returnBool = false;
-            if (id >= 1)
-            {
-                var task = Tasks.FirstOrDefault(t => t.Id == id);
-                if (userTaskChange != "")
-                {
-                    if (fieldInteger == 1)
-                    {
-                        task.Name = userTaskChange;
-                        returnBool = true;
-                    }
-                    if (fieldInteger == 2)
-                    {
-                        task.Status = userTaskChange;
-                        returnBool = true;
-                    }
-                    if (fieldInteger == 3)
-                    {
-                        task.Description = userTaskChange;
-                        returnBool = true;
-                    }
-                }
-            }
-            return returnBool;
+            var task = Tasks.FirstOrDefault(t => t.Id == id);
+
+            if (task == null) return false;
+            if (!string.IsNullOrEmpty(request.Name)) task.Name = request.Name;
+            if (request.Description != null) task.Description = request.Description;
+            if (!string.IsNullOrEmpty(request.Status)) task.Status = request.Status;
+
+            _repo.Save(Tasks);
+            return true;
         }
         public IEnumerable<TaskItem> GetAll()
         {
-            return Tasks.Where(t => !t.Deleted);
+            return Tasks;
         }
         public TaskItem? GetTask(int id)
         {
@@ -79,14 +65,6 @@ namespace TaskTrackerAPI.Services
         public IEnumerable<TaskItem> GetInProgress()
         {
             return Tasks.Where(t => t.Status == "In Progress");
-        }
-        public IEnumerable<TaskItem> GetDeleted()
-        {
-            return Tasks.Where(t => t.Deleted == true);
-        }
-        public IEnumerable<TaskItem> GetUnfinished()
-        {
-            return Tasks.Where(t => !t.Finished);
         }
 
         public void SaveTasks()

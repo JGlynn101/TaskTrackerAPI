@@ -10,8 +10,6 @@ namespace TaskTracker
     public string Name { get; set; } = "";
     public string Description { get; set; } = "";
     public string Status { get; set; } = "Todo";
-    public bool Finished { get; set; }
-    public bool Deleted { get; set; }
 
     public TaskItem() {} 
 
