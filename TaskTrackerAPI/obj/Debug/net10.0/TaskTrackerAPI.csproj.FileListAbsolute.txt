@@ -67,3 +67,6 @@ C:\Users\joshu\Source\Repos\TaskTrackerAPI\TaskTrackerAPI\obj\Debug\net10.0\refi
 C:\Users\joshu\Source\Repos\TaskTrackerAPI\TaskTrackerAPI\obj\Debug\net10.0\TaskTrackerAPI.pdb
 C:\Users\joshu\Source\Repos\TaskTrackerAPI\TaskTrackerAPI\obj\Debug\net10.0\TaskTrackerAPI.genruntimeconfig.cache
 C:\Users\joshu\Source\Repos\TaskTrackerAPI\TaskTrackerAPI\obj\Debug\net10.0\ref\TaskTrackerAPI.dll
+C:\Users\joshu\Source\Repos\TaskTrackerAPI\TaskTrackerAPI\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\joshu\Source\Repos\TaskTrackerAPI\TaskTrackerAPI\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\joshu\Source\Repos\TaskTrackerAPI\TaskTrackerAPI\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll

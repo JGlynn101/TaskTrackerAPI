@@ -1,26 +1,26 @@
 using System.Text.Json;
 using System.IO;
 using System.Runtime.InteropServices;
-using TaskTracker.Repositories;
-using TaskTracker;
+using TaskTrackerAPI.Repositories;
+using TaskTrackerAPI;
 using TaskTrackerAPI.Contracts.Tasks;
 
 namespace TaskTrackerAPI.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly TaskRepository _repo;
-        public List<TaskItem> Tasks { get; }
+        private readonly ITaskRepository _repo;
+        private readonly List<TaskItem> _tasks;
         public int NextId { get; private set; }
-        public TaskService(TaskRepository repo)
+        public TaskService(ITaskRepository repo)
         {
             _repo = repo;
-            Tasks = _repo.Load();
-            NextId = Tasks.Count == 0 ? 1 : Tasks.Max(t => t.Id) + 1;
+            _tasks = _repo.Load();
+            NextId = _tasks.Count == 0 ? 1 : _tasks.Max(t => t.Id) + 1;
         }
         public TaskItem? GetById(int id)
         {
-            return Tasks.FirstOrDefault(t => t.Id == id);
+            return _tasks.FirstOrDefault(t => t.Id == id);
         }
         public TaskItem Add(string name, string description)
         {
@@ -29,47 +29,45 @@ namespace TaskTrackerAPI.Services
                 throw new ArgumentException("Task name cannot be empty");
             }
             var task = new TaskItem(NextId++, name, description);
-            Tasks.Add(task);
-            _repo.Save(Tasks);
+            _tasks.Add(task);
+            _repo.Save(_tasks);
             return task;
         }
-        public void Delete(int id)
+        public bool Delete(int id)
         {
-            var task = Tasks.FirstOrDefault(t => t.Id == id);
+            bool deleted = false;
+            var task = _tasks.FirstOrDefault(t => t.Id == id);
             if (task != null)
             {
-                Tasks.Remove(task);
-                _repo.Save(Tasks);
+                deleted = _tasks.Remove(task);
+                _repo.Save(_tasks);
             }
+            return deleted;
         }
         public bool Update(int id, UpdateTaskRequest request)
         {
-            var task = Tasks.FirstOrDefault(t => t.Id == id);
+            var task = _tasks.FirstOrDefault(t => t.Id == id);
 
             if (task == null) return false;
-            if (!string.IsNullOrEmpty(request.Name)) task.Name = request.Name;
+            if (!string.IsNullOrWhiteSpace(request.Name)) task.Name = request.Name;
             if (request.Description != null) task.Description = request.Description;
-            if (!string.IsNullOrEmpty(request.Status)) task.Status = request.Status;
+            if (!string.IsNullOrWhiteSpace(request.Status)) task.Status = request.Status;
 
-            _repo.Save(Tasks);
+            _repo.Save(_tasks);
             return true;
         }
         public IEnumerable<TaskItem> GetAll()
         {
-            return Tasks;
-        }
-        public TaskItem? GetTask(int id)
-        {
-            return Tasks.SingleOrDefault(t => t.Id == id);
+            return _tasks;
         }
         public IEnumerable<TaskItem> GetInProgress()
         {
-            return Tasks.Where(t => t.Status == "In Progress");
+            return _tasks.Where(t => t.Status == "In Progress");
         }
 
         public void SaveTasks()
         {
-            _repo.Save(Tasks);
+            _repo.Save(_tasks);
         }
 
     }

@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace TaskTracker.Repositories
+namespace TaskTrackerAPI.Repositories
 {
     public class TaskRepository : ITaskRepository
     {
